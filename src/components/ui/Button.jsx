@@ -1,26 +1,27 @@
 import { forwardRef } from 'react'
+import { Loader2 } from 'lucide-react'
 
-const variants = {
-  primary: 'bg-grafana-blue text-white hover:bg-grafana-blue/90 shadow-sm disabled:opacity-40',
-  secondary: 'bg-bg-hover text-text-primary hover:bg-border-default border border-border-default disabled:opacity-40',
-  danger: 'bg-grafana-red text-white hover:bg-grafana-red/90 disabled:opacity-40',
-  ghost: 'text-text-secondary hover:text-text-primary hover:bg-bg-hover disabled:opacity-40',
-  outline: 'border border-border-default text-text-primary hover:bg-bg-hover disabled:opacity-40',
+const variantStyles = {
+  primary: 'bg-grafana-blue text-white hover:brightness-110 active:brightness-95 disabled:opacity-40',
+  secondary: 'bg-surface-elevated border border-border text-text-primary hover:bg-surface-hover disabled:opacity-40',
+  destructive: 'bg-grafana-red text-white hover:brightness-110 active:brightness-95 disabled:opacity-40',
+  ghost: 'text-text-secondary hover:text-text-primary hover:bg-surface-hover disabled:opacity-40',
 }
 
-const sizes = {
-  sm: 'px-3 py-1.5 text-xs gap-1.5',
-  md: 'px-4 py-2 text-sm gap-2',
-  lg: 'px-5 py-2.5 text-sm gap-2',
+const sizeStyles = {
+  sm: 'px-2 py-1.5 text-xs',
+  md: 'px-3 py-1.5 text-sm',
+  lg: 'px-4 py-2 text-base',
 }
 
-const Button = forwardRef(({ variant = 'primary', size = 'md', icon: Icon, children, className = '', ...props }, ref) => (
+const Button = forwardRef(({ variant = 'primary', size = 'md', loading, className = '', children, disabled, ...props }, ref) => (
   <button
     ref={ref}
-    className={`inline-flex items-center justify-center font-medium rounded-lg transition-colors cursor-pointer ${variants[variant]} ${sizes[size]} ${className}`}
+    disabled={disabled || loading}
+    className={`inline-flex items-center justify-center gap-2 font-medium rounded-grafana transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-grafana-blue ${variantStyles[variant]} ${sizeStyles[size]} ${className}`}
     {...props}
   >
-    {Icon && <Icon size={size === 'sm' ? 14 : 16} />}
+    {loading && <Loader2 size={size === 'sm' ? 12 : 14} className="animate-spin" />}
     {children}
   </button>
 ))

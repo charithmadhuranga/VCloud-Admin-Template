@@ -34,7 +34,7 @@ const actionColors = {
   'user.logout': 'info',
 }
 
-export default function AuditLog() {
+export default function ActivityLog() {
   const [filter, setFilter] = useState('')
   const filtered = useMemo(() =>
     logs.filter(l => Object.values(l).some(v => String(v).toLowerCase().includes(filter.toLowerCase()))),

@@ -1,26 +1,35 @@
-import clsx from 'clsx'
-
-const variants = {
-  success: 'bg-grafana-green/10 text-grafana-green',
-  warning: 'bg-grafana-yellow/10 text-grafana-yellow',
-  error: 'bg-grafana-red/10 text-grafana-red',
-  info: 'bg-grafana-blue/10 text-grafana-blue',
-  neutral: 'bg-bg-hover text-text-secondary',
-  purple: 'bg-grafana-purple/10 text-grafana-purple',
-  orange: 'bg-grafana-orange/10 text-grafana-orange',
+const dotColors = {
+  green: 'bg-grafana-green',
+  gray: 'bg-text-muted',
+  red: 'bg-grafana-red',
+  orange: 'bg-grafana-orange',
+  blue: 'bg-grafana-blue',
+  purple: 'bg-grafana-purple',
 }
 
-const sizes = {
-  sm: 'px-1.5 py-0.5 text-[10px]',
-  md: 'px-2 py-0.5 text-xs',
-  lg: 'px-2.5 py-1 text-sm',
+const textColors = {
+  green: 'text-grafana-green',
+  gray: 'text-text-muted',
+  red: 'text-grafana-red',
+  orange: 'text-grafana-orange',
+  blue: 'text-grafana-blue',
+  purple: 'text-grafana-purple',
 }
 
-export default function Badge({ variant = 'neutral', size = 'md', dot, children, className }) {
+const variantAlias = {
+  success: 'green',
+  error: 'red',
+  warning: 'orange',
+  info: 'blue',
+  neutral: 'gray',
+}
+
+export default function Badge({ color, variant, children, className = '' }) {
+  const resolved = color || variantAlias[variant] || 'gray'
   return (
-    <span className={clsx('inline-flex items-center gap-1.5 rounded-full font-medium', variants[variant], sizes[size], className)}>
-      {dot && <span className={clsx('w-1.5 h-1.5 rounded-full', variants[variant].split(' ')[1].replace('text-', 'bg-'))} />}
-      {children}
+    <span className={`inline-flex items-center gap-1.5 text-xs font-medium ${className}`}>
+      <span className={`w-2 h-2 rounded-full ${dotColors[resolved] || dotColors.gray}`} />
+      <span className={textColors[resolved] || textColors.gray}>{children}</span>
     </span>
   )
 }

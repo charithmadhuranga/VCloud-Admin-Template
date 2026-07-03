@@ -1,38 +1,38 @@
-import { useEffect, useRef } from 'react'
+import { useEffect } from 'react'
 import { X } from 'lucide-react'
 
-export default function Modal({ isOpen, onClose, title, children, className = '' }) {
-  const overlayRef = useRef()
+export default function Modal({ open, onClose, title, children, footer, className = '' }) {
+  useEffect(() => {
+    if (open) document.body.style.overflow = 'hidden'
+    else document.body.style.overflow = ''
+    return () => { document.body.style.overflow = '' }
+  }, [open])
 
   useEffect(() => {
-    const handleKey = (e) => { if (e.key === 'Escape') onClose() }
-    if (isOpen) {
-      document.addEventListener('keydown', handleKey)
-      document.body.style.overflow = 'hidden'
-    }
-    return () => {
-      document.removeEventListener('keydown', handleKey)
-      document.body.style.overflow = ''
-    }
-  }, [isOpen, onClose])
+    const handler = (e) => { if (e.key === 'Escape') onClose() }
+    if (open) window.addEventListener('keydown', handler)
+    return () => window.removeEventListener('keydown', handler)
+  }, [open, onClose])
 
-  if (!isOpen) return null
+  if (!open) return null
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+    <div className="fixed inset-0 z-50 flex items-center justify-center" onClick={onClose}>
+      <div className="absolute inset-0 bg-black/60" />
       <div
-        ref={overlayRef}
-        className="absolute inset-0 bg-black/50 backdrop-blur-sm"
-        onClick={(e) => { if (e.target === overlayRef.current) onClose() }}
-      />
-      <div className={`relative w-full max-w-lg rounded-xl border border-border-default bg-bg-card shadow-xl animate-fade-in ${className}`}>
-        <div className="flex items-center justify-between px-5 py-4 border-b border-border-default">
-          <h2 className="text-sm font-semibold text-text-primary">{title}</h2>
-          <button onClick={onClose} className="w-7 h-7 rounded-md flex items-center justify-center text-text-tertiary hover:text-text-primary hover:bg-bg-hover transition-colors cursor-pointer">
-            <X size={14} />
+        className={`relative bg-surface-elevated border border-border rounded-grafana w-full mx-4 ${className || 'max-w-lg'}`}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+          <h2 className="text-base font-semibold text-text-primary">{title}</h2>
+          <button onClick={onClose} className="text-text-muted hover:text-text-primary transition-colors">
+            <X size={18} />
           </button>
         </div>
-        <div className="px-5 py-4">{children}</div>
+        <div className="px-4 py-4">{children}</div>
+        {footer && (
+          <div className="flex justify-end gap-2 px-4 py-3 border-t border-border">{footer}</div>
+        )}
       </div>
     </div>
   )

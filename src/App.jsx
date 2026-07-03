@@ -1,20 +1,19 @@
-import { BrowserRouter, Routes, Route } from 'react-router'
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router'
 import { ThemeProvider } from './context/ThemeContext'
 import Layout from './components/Layout'
 import Dashboard from './pages/Dashboard'
+import Devices from './pages/Devices'
+import DeviceDetail from './pages/DeviceDetail'
+import Flows from './pages/Flows'
+import Stacks from './pages/Stacks'
+import EdgeX from './pages/EdgeX'
+import Tunnel from './pages/Tunnel'
 import Analytics from './pages/Analytics'
-import MetricsOverview from './pages/metrics/Overview'
-import MetricsCPU from './pages/metrics/CPU'
-import MetricsMemory from './pages/metrics/Memory'
-import MetricsNetwork from './pages/metrics/Network'
 import Alerts from './pages/Alerts'
-import Nodes from './pages/Nodes'
-import Containers from './pages/Containers'
-import Security from './pages/Security'
+import ActivityLog from './pages/ActivityLog'
 import Users from './pages/Users'
 import Settings from './pages/Settings'
-import AuditLog from './pages/AuditLog'
-import Integrations from './pages/Integrations'
+import NotFound from './pages/NotFound'
 
 function App() {
   return (
@@ -22,20 +21,20 @@ function App() {
       <BrowserRouter>
         <Routes>
           <Route element={<Layout />}>
-            <Route index element={<Dashboard />} />
+            <Route index element={<Navigate to="/dashboard" replace />} />
+            <Route path="dashboard" element={<Dashboard />} />
+            <Route path="devices" element={<Devices />} />
+            <Route path="devices/:deviceId" element={<DeviceDetail />} />
+            <Route path="flows" element={<Flows />} />
+            <Route path="stacks" element={<Stacks />} />
+            <Route path="edgex" element={<EdgeX />} />
+            <Route path="tunnel" element={<Tunnel />} />
             <Route path="analytics" element={<Analytics />} />
-            <Route path="metrics" element={<MetricsOverview />} />
-            <Route path="metrics/cpu" element={<MetricsCPU />} />
-            <Route path="metrics/memory" element={<MetricsMemory />} />
-            <Route path="metrics/network" element={<MetricsNetwork />} />
             <Route path="alerts" element={<Alerts />} />
-            <Route path="nodes" element={<Nodes />} />
-            <Route path="containers" element={<Containers />} />
-            <Route path="security" element={<Security />} />
+            <Route path="activity" element={<ActivityLog />} />
             <Route path="users" element={<Users />} />
             <Route path="settings" element={<Settings />} />
-            <Route path="audit" element={<AuditLog />} />
-            <Route path="integrations" element={<Integrations />} />
+            <Route path="*" element={<NotFound />} />
           </Route>
         </Routes>
       </BrowserRouter>

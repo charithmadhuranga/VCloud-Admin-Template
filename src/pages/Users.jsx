@@ -1,103 +1,89 @@
-import { useState, useMemo } from 'react'
-import { Search, Shield, ShieldOff, UserPlus } from 'lucide-react'
-import PageBreadCrumb from '../components/ui/PageBreadCrumb'
+import { useState } from 'react'
+import { Search, User, Shield, MoreHorizontal, Mail, Clock, Check, X } from 'lucide-react'
 import Badge from '../components/ui/Badge'
-import Avatar from '../components/ui/Avatar'
-import Button from '../components/ui/Button'
+import Card from '../components/ui/Card'
 
 const users = [
-  { id: 1, name: 'John Doe', email: 'john@fleet.io', role: 'Admin', status: 'Active', mfa: true, lastActive: '2m ago', teams: ['Platform', 'Security'] },
-  { id: 2, name: 'Jane Smith', email: 'jane@fleet.io', role: 'Engineer', status: 'Active', mfa: true, lastActive: '15m ago', teams: ['Backend', 'Infra'] },
-  { id: 3, name: 'Mike Johnson', email: 'mike@fleet.io', role: 'Viewer', status: 'Active', mfa: false, lastActive: '1h ago', teams: ['Frontend'] },
-  { id: 4, name: 'Sarah Wilson', email: 'sarah@fleet.io', role: 'Engineer', status: 'Inactive', mfa: true, lastActive: '3d ago', teams: ['Data', 'ML'] },
-  { id: 5, name: 'Alex Chen', email: 'alex@fleet.io', role: 'Admin', status: 'Active', mfa: true, lastActive: '5m ago', teams: ['Platform', 'Security', 'Infra'] },
-  { id: 6, name: 'Emily Davis', email: 'emily@fleet.io', role: 'Engineer', status: 'Active', mfa: false, lastActive: '30m ago', teams: ['Backend'] },
-  { id: 7, name: 'Tom Brown', email: 'tom@fleet.io', role: 'Viewer', status: 'Suspended', mfa: false, lastActive: '2w ago', teams: ['External'] },
-  { id: 8, name: 'Lisa Anderson', email: 'lisa@fleet.io', role: 'Engineer', status: 'Active', mfa: true, lastActive: '10m ago', teams: ['Frontend', 'Design'] },
+  { id: 'u-01', name: 'Alex Morgan', email: 'alex@vedge.io', role: 'Admin', status: 'active', lastActive: 'Just now', avatar: 'AM' },
+  { id: 'u-02', name: 'Jordan Lee', email: 'jordan@vedge.io', role: 'Editor', status: 'active', lastActive: '5m ago', avatar: 'JL' },
+  { id: 'u-03', name: 'Taylor Smith', email: 'taylor@vedge.io', role: 'Viewer', status: 'active', lastActive: '1h ago', avatar: 'TS' },
+  { id: 'u-04', name: 'Casey Brown', email: 'casey@vedge.io', role: 'Editor', status: 'inactive', lastActive: '2d ago', avatar: 'CB' },
+  { id: 'u-05', name: 'Riley Johnson', email: 'riley@vedge.io', role: 'Viewer', status: 'active', lastActive: '30m ago', avatar: 'RJ' },
+  { id: 'u-06', name: 'Sam Wilson', email: 'sam@vedge.io', role: 'Admin', status: 'active', lastActive: '10m ago', avatar: 'SW' },
 ]
 
+const roleColors = { Admin: 'purple', Editor: 'blue', Viewer: 'gray' }
+const statusColors = { active: 'green', inactive: 'gray' }
+
 export default function Users() {
-  const [filter, setFilter] = useState('')
-  const filtered = useMemo(() =>
-    users.filter(u => Object.values(u).some(v => String(v).toLowerCase().includes(filter.toLowerCase()))),
-    [filter]
+  const [search, setSearch] = useState('')
+
+  const filtered = users.filter(u =>
+    !search || u.name.toLowerCase().includes(search.toLowerCase()) || u.email.toLowerCase().includes(search.toLowerCase())
   )
 
   return (
-    <div className="space-y-6">
-      <div>
-        <PageBreadCrumb items={['Fleet Admin', 'Infrastructure', 'Users']} />
-        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div>
-            <h1 className="text-lg font-semibold text-text-primary">Users</h1>
-            <p className="text-sm text-text-secondary mt-0.5">{users.length} team members</p>
-          </div>
-          <div className="flex-shrink-0 self-start sm:self-auto"><Button variant="primary" size="sm" icon={UserPlus}>Invite User</Button></div>
+    <div>
+      <div className="flex items-center justify-between mb-1">
+        <h1 className="text-xl font-semibold text-text-primary">Users</h1>
+      </div>
+      <p className="text-sm text-text-secondary mb-6">Manage team members and their access permissions.</p>
+
+      <div className="flex flex-wrap items-center gap-3 mb-4">
+        <div className="relative flex-1 max-w-xs">
+          <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
+          <input
+            type="text"
+            value={search}
+            onChange={(e) => setSearch(e.target.value)}
+            placeholder="Search users..."
+            className="w-full pl-9 pr-3 py-1.5 text-sm bg-surface-elevated border border-border rounded-grafana text-text-primary placeholder-text-muted focus:outline-none focus:ring-1 focus:ring-grafana-blue"
+          />
         </div>
       </div>
 
-      <div className="rounded-xl border border-border-default bg-bg-card overflow-hidden">
-        <div className="px-4 sm:px-5 py-3 border-b border-border-default flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
-          <div className="flex gap-4 overflow-x-auto no-scrollbar">
-            {['All', 'Active', 'Inactive', 'Suspended'].map(tab => (
-              <button key={tab} className={`text-xs font-medium whitespace-nowrap transition-colors cursor-pointer ${
-                tab === 'All' ? 'text-grafana-blue' : 'text-text-tertiary hover:text-text-primary'
-              }`}>{tab}</button>
-            ))}
-          </div>
-          <div className="relative w-full sm:w-auto">
-            <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
-            <input type="text" value={filter} onChange={e => setFilter(e.target.value)}
-              placeholder="Search users..." className="w-full sm:w-44 h-8 pl-8 pr-2 rounded-md bg-bg-input border border-border-subtle text-xs text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-grafana-blue/30" />
-          </div>
-        </div>
-        <div className="overflow-x-auto">
-          <table className="w-full text-sm">
-            <thead>
-              <tr className="border-b border-border-default bg-bg-hover/50">
-                {['User', 'Role', 'Status', 'MFA', 'Teams', 'Last Active'].map(h => (
-                  <th key={h} className="px-4 py-3 text-left text-xs font-semibold text-text-secondary uppercase">{h}</th>
-                ))}
+      <Card className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <thead>
+            <tr className="border-b border-border bg-surface-hover">
+              <th className="text-left px-4 py-3 text-xs font-semibold text-text-muted uppercase tracking-wider">User</th>
+              <th className="text-left px-4 py-3 text-xs font-semibold text-text-muted uppercase tracking-wider hidden sm:table-cell">Role</th>
+              <th className="text-left px-4 py-3 text-xs font-semibold text-text-muted uppercase tracking-wider hidden md:table-cell">Status</th>
+              <th className="text-left px-4 py-3 text-xs font-semibold text-text-muted uppercase tracking-wider hidden lg:table-cell">Last Active</th>
+              <th className="w-10 px-4 py-3" />
+            </tr>
+          </thead>
+          <tbody>
+            {filtered.map((u) => (
+              <tr key={u.id} className="border-b border-border hover:bg-surface-hover transition-colors last:border-0">
+                <td className="px-4 py-3">
+                  <div className="flex items-center gap-3">
+                    <div className="w-8 h-8 rounded-full bg-grafana-blue/10 flex items-center justify-center text-xs font-semibold text-grafana-blue">
+                      {u.avatar}
+                    </div>
+                    <div>
+                      <p className="text-sm font-medium text-text-primary">{u.name}</p>
+                      <p className="text-xs text-text-muted">{u.email}</p>
+                    </div>
+                  </div>
+                </td>
+                <td className="px-4 py-3 hidden sm:table-cell">
+                  <Badge color={roleColors[u.role]}>{u.role}</Badge>
+                </td>
+                <td className="px-4 py-3 hidden md:table-cell">
+                  <Badge color={statusColors[u.status]}>{u.status}</Badge>
+                </td>
+                <td className="px-4 py-3 text-text-muted text-xs hidden lg:table-cell">{u.lastActive}</td>
+                <td className="px-4 py-3">
+                  <button className="p-1.5 rounded-md text-text-muted hover:text-text-primary hover:bg-surface-hover transition-colors cursor-pointer">
+                    <MoreHorizontal size={15} />
+                  </button>
+                </td>
               </tr>
-            </thead>
-            <tbody>
-              {filtered.map((u, i) => (
-                <tr key={u.id} className={`border-b border-border-default hover:bg-bg-hover/40 ${i % 2 === 0 ? '' : 'bg-bg-hover/20'}`}>
-                  <td className="px-4 py-2.5">
-                    <div className="flex items-center gap-3">
-                      <Avatar name={u.name} size="sm" />
-                      <div>
-                        <p className="text-sm font-medium text-text-primary">{u.name}</p>
-                        <p className="text-xs text-text-tertiary">{u.email}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td className="px-4 py-2.5">
-                    <Badge variant={u.role === 'Admin' ? 'purple' : u.role === 'Engineer' ? 'info' : 'neutral'} size="sm">{u.role}</Badge>
-                  </td>
-                  <td className="px-4 py-2.5">
-                    <Badge variant={u.status === 'Active' ? 'success' : u.status === 'Inactive' ? 'warning' : 'error'} size="sm" dot>{u.status}</Badge>
-                  </td>
-                  <td className="px-4 py-2.5">
-                    {u.mfa
-                      ? <Shield size={14} className="text-grafana-green" />
-                      : <ShieldOff size={14} className="text-text-tertiary" />
-                    }
-                  </td>
-                  <td className="px-4 py-2.5">
-                    <div className="flex gap-1 flex-wrap">
-                      {u.teams.map(t => (
-                        <span key={t} className="px-1.5 py-0.5 rounded bg-bg-hover text-[10px] text-text-secondary font-medium">{t}</span>
-                      ))}
-                    </div>
-                  </td>
-                  <td className="px-4 py-2.5 text-xs text-text-tertiary">{u.lastActive}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-      </div>
+            ))}
+          </tbody>
+        </table>
+      </Card>
     </div>
   )
 }
