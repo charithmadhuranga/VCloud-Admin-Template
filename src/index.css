@@ -1,0 +1,89 @@
+@import "tailwindcss";
+
+@theme {
+  --color-grafana-blue: #6f96d9;
+  --color-grafana-green: #6fbf73;
+  --color-grafana-red: #e24d5d;
+  --color-grafana-orange: #f08c3e;
+  --color-grafana-purple: #967bde;
+  --color-grafana-yellow: #f5c542;
+
+  --color-bg-body: light-dark(#f4f5f8, #0b0d10);
+  --color-bg-surface: light-dark(#ffffff, #141619);
+  --color-bg-card: light-dark(#ffffff, #1a1c21);
+  --color-bg-elevated: light-dark(#ffffff, #1e2026);
+  --color-bg-input: light-dark(#f0f1f4, #26282e);
+  --color-bg-hover: light-dark(#ecedf0, #2a2c33);
+
+  --color-border-default: light-dark(#e0e2e6, #4a4f5a);
+  --color-border-subtle: light-dark(#e8eaed, #3f4450);
+
+  --color-text-primary: light-dark(#2c3235, #e2e4e7);
+  --color-text-secondary: light-dark(#767980, #8e94a0);
+  --color-text-tertiary: light-dark(#9ca0a8, #5b606b);
+  --color-text-inverse: light-dark(#ffffff, #0b0d10);
+
+  --color-sidebar-bg: light-dark(#f0f1f4, #0f1114);
+  --color-sidebar-hover: light-dark(#e0e2e6, #1a1c21);
+  --color-sidebar-active: light-dark(#d6d8dd, #1e2026);
+
+  --color-chart-1: #6f96d9;
+  --color-chart-2: #6fbf73;
+  --color-chart-3: #f5c542;
+  --color-chart-4: #e24d5d;
+  --color-chart-5: #967bde;
+  --color-chart-6: #f08c3e;
+
+  --color-success: #6fbf73;
+  --color-warning: #f5c542;
+  --color-error: #e24d5d;
+  --color-info: #6f96d9;
+}
+
+body {
+  margin: 0;
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: var(--color-bg-body);
+  color: var(--color-text-primary);
+  transition: background-color 0.2s, color 0.2s;
+  -webkit-font-smoothing: antialiased;
+}
+
+* {
+  border-color: var(--color-border-default);
+}
+
+@custom-variant dark (&:is(.dark *));
+
+@utility custom-scrollbar {
+  &::-webkit-scrollbar { width: 5px; height: 5px; }
+  &::-webkit-scrollbar-track { background: transparent; }
+  &::-webkit-scrollbar-thumb { background: var(--color-border-default); border-radius: 999px; }
+  &::-webkit-scrollbar-thumb:hover { background: var(--color-text-tertiary); }
+}
+
+@layer utilities {
+  .no-scrollbar::-webkit-scrollbar { display: none; }
+  .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+}
+
+/* echarts theme overrides */
+.echarts-for-react canvas { outline: none; }
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-in {
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 0.4; }
+  50% { opacity: 1; }
+}
+
+.animate-pulse-dot {
+  animation: pulse-dot 2s ease-in-out infinite;
+}
