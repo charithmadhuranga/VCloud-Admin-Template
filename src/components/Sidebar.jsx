@@ -5,17 +5,36 @@ import {
 } from 'lucide-react'
 import { useSidebar } from '../context/SidebarContext'
 
-const links = [
-  { to: '/dashboard', label: 'Overview', icon: LayoutDashboard },
-  { to: '/devices', label: 'Devices', icon: Monitor },
-  { to: '/stacks', label: 'Stacks', icon: Layers },
-  { to: '/edgex', label: 'EdgeX', icon: Cpu },
-
-  { to: '/analytics', label: 'Analytics', icon: BarChart3 },
-  { to: '/alerts', label: 'Alerts', icon: AlertTriangle },
-  { to: '/activity', label: 'Activity', icon: History },
-  { to: '/users', label: 'Users', icon: Users },
-  { to: '/settings', label: 'Settings', icon: Settings },
+const navGroups = [
+  {
+    label: 'Overview',
+    items: [
+      { to: '/dashboard', label: 'Overview', icon: LayoutDashboard },
+    ],
+  },
+  {
+    label: 'Infrastructure',
+    items: [
+      { to: '/edgex', label: 'EdgeX', icon: Cpu },
+      { to: '/devices', label: 'Devices', icon: Monitor },
+      { to: '/stacks', label: 'Stacks', icon: Layers },
+    ],
+  },
+  {
+    label: 'Observability',
+    items: [
+      { to: '/analytics', label: 'Analytics', icon: BarChart3 },
+      { to: '/alerts', label: 'Alerts', icon: AlertTriangle },
+      { to: '/activity', label: 'Activity', icon: History },
+    ],
+  },
+  {
+    label: 'Administration',
+    items: [
+      { to: '/users', label: 'Users', icon: Users },
+      { to: '/settings', label: 'Settings', icon: Settings },
+    ],
+  },
 ]
 
 export default function Sidebar() {
@@ -32,25 +51,39 @@ export default function Sidebar() {
 
   const navContent = (
     <nav className="flex-1 flex flex-col overflow-y-auto overflow-x-hidden min-h-0 py-4">
-      <div className="flex flex-col justify-between flex-1 gap-1 px-3">
-        {links.map(({ to, label, icon: Icon }) => (
-          <NavLink
-            key={to}
-            to={to}
-            end
-            className={linkClass}
-            onClick={() => { setIsMobileOpen(false) }}
-            title={collapsed ? label : undefined}
-          >
-            <Icon size={18} className="shrink-0" />
-            <span
-              className={`truncate transition-all duration-200 origin-left ${
-                collapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'
-              }`}
-            >
-              {label}
+      <div className="flex flex-col gap-1 px-3">
+        {navGroups.map((group, gi) => (
+          <div key={group.label}>
+            {gi > 0 && (
+              <div className={`h-px bg-border my-3 ${collapsed ? 'mx-1' : ''}`} />
+            )}
+            <span className={`text-[10px] font-semibold uppercase tracking-wider text-text-muted px-3 py-1 transition-all duration-200 origin-left ${
+              collapsed ? 'opacity-0 w-0 overflow-hidden h-0' : 'opacity-100'
+            }`}>
+              {group.label}
             </span>
-          </NavLink>
+            <div className="flex flex-col gap-0.5">
+              {group.items.map(({ to, label, icon: Icon }) => (
+                <NavLink
+                  key={to}
+                  to={to}
+                  end
+                  className={linkClass}
+                  onClick={() => { setIsMobileOpen(false) }}
+                  title={collapsed ? label : undefined}
+                >
+                  <Icon size={18} className="shrink-0" />
+                  <span
+                    className={`truncate transition-all duration-200 origin-left ${
+                      collapsed ? 'opacity-0 w-0 overflow-hidden' : 'opacity-100'
+                    }`}
+                  >
+                    {label}
+                  </span>
+                </NavLink>
+              ))}
+            </div>
+          </div>
         ))}
       </div>
     </nav>
