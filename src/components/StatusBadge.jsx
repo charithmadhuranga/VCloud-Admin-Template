@@ -3,7 +3,7 @@ const variants = {
   warning: { bg: 'bg-grafana-yellow/10', dot: 'bg-grafana-yellow', text: 'text-grafana-yellow' },
   error: { bg: 'bg-grafana-red/10', dot: 'bg-grafana-red', text: 'text-grafana-red' },
   info: { bg: 'bg-grafana-blue/10', dot: 'bg-grafana-blue', text: 'text-grafana-blue' },
-  neutral: { bg: 'bg-bg-hover', dot: 'bg-text-tertiary', text: 'text-text-secondary' },
+  neutral: { bg: 'bg-(--color-surface-hover)', dot: 'bg-(--color-text-muted)', text: 'text-(--color-text-secondary)' },
 }
 
 export default function StatusBadge({ variant = 'neutral', label }) {

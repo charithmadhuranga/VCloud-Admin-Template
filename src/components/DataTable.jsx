@@ -63,31 +63,31 @@ export default function DataTable() {
   }
 
   return (
-    <div className="rounded-xl border border-border-default bg-bg-card overflow-hidden">
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between px-4 sm:px-5 py-3 border-b border-border-default gap-3">
-        <h3 className="text-sm font-semibold text-text-primary">Node Metrics</h3>
+    <div className="rounded-xl border border-(--color-border) bg-(--color-surface-elevated) overflow-hidden">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between px-4 sm:px-5 py-3 border-b border-(--color-border) gap-3">
+        <h3 className="text-sm font-semibold text-(--color-text-primary)">Node Metrics</h3>
         <div className="relative w-full sm:w-auto">
-          <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
+          <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-(--color-text-muted)" />
           <input
             type="text"
             value={filter}
             onChange={e => setFilter(e.target.value)}
             placeholder="Filter..."
-            className="w-full sm:w-44 h-8 pl-8 pr-2 rounded-md bg-bg-input border border-border-subtle text-xs text-text-primary 
-                       placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-grafana-blue/30 transition-colors"
+            className="w-full sm:w-44 h-8 pl-8 pr-2 rounded-md bg-(--color-surface-elevated) border border-(--color-border) text-xs text-(--color-text-primary) 
+                       placeholder:text-(--color-text-muted) focus:outline-none focus:ring-2 focus:ring-grafana-blue/30 transition-colors"
           />
         </div>
       </div>
       <div className="overflow-x-auto">
         <table className="w-full text-sm">
           <thead>
-            <tr className="border-b border-border-default bg-bg-hover/50">
+            <tr className="border-b border-(--color-border) bg-(--color-surface-hover)/50">
               {columns.map(col => (
                 <th
                   key={col.key}
                   onClick={() => col.sortable && handleSort(col.key)}
-                  className={`px-4 py-3 text-left text-xs font-semibold text-text-secondary tracking-wider uppercase ${
-                    col.sortable ? 'cursor-pointer hover:text-text-primary select-none' : ''
+                  className={`px-4 py-3 text-left text-xs font-semibold text-(--color-text-secondary) tracking-wider uppercase ${
+                    col.sortable ? 'cursor-pointer hover:text-(--color-text-primary) select-none' : ''
                   }`}
                 >
                   <div className="flex items-center gap-1">
@@ -110,12 +110,12 @@ export default function DataTable() {
             {sorted.map((row, i) => (
               <tr
                 key={row.id}
-                className={`border-b border-border-default transition-colors hover:bg-bg-hover/40 ${
-                  i % 2 === 0 ? 'bg-transparent' : 'bg-bg-hover/20'
+                className={`border-b border-(--color-border) transition-colors hover:bg-(--color-surface-hover)/40 ${
+                  i % 2 === 0 ? 'bg-transparent' : 'bg-(--color-surface-hover)/20'
                 }`}
               >
                 {columns.map(col => (
-                  <td key={col.key} className="px-4 py-2.5 text-text-primary text-sm whitespace-nowrap">
+                  <td key={col.key} className="px-4 py-2.5 text-(--color-text-primary) text-sm whitespace-nowrap">
                     {col.render ? col.render(row[col.key]) : row[col.key]}
                   </td>
                 ))}
@@ -124,7 +124,7 @@ export default function DataTable() {
           </tbody>
         </table>
       </div>
-      <div className="px-5 py-2.5 border-t border-border-default text-xs text-text-tertiary flex items-center justify-between">
+      <div className="px-5 py-2.5 border-t border-(--color-border) text-xs text-(--color-text-muted) flex items-center justify-between">
         <span>{sorted.length} of {initialData.length} nodes</span>
         <span>Updated 2m ago</span>
       </div>

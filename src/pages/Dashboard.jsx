@@ -1,57 +1,136 @@
-import { Server, HardDrive, Activity, AlertTriangle, Cpu } from 'lucide-react'
-import StatCard from '../components/StatCard'
-import SparklineChart from '../components/SparklineChart'
-import DataTable from '../components/DataTable'
-import ActivityFeed from '../components/ActivityFeed'
-import AreaChart from '../components/charts/AreaChart'
-import PageBreadCrumb from '../components/ui/PageBreadCrumb'
+import { useState } from "react";
+import { Edit3, Save, X, Server, Wifi, WifiOff, Eye, EyeOff, Plus, BarChart3 } from "lucide-react";
+import Card from "../components/ui/Card";
+import Button from "../components/ui/Button";
 
-const hours = Array.from({ length: 24 }, (_, i) => `${String(i).padStart(2, '0')}:00`)
+const FLEET_WIDGETS = [
+  { id: "fleet-total", title: "Total Provisioned Devices", type: "fleet", fleetType: "total", value: "247", change: "+12 this week" },
+  { id: "fleet-online", title: "Online / Connected", type: "fleet", fleetType: "online", value: "203", change: "82% of total" },
+  { id: "fleet-offline", title: "Offline / Disconnected", type: "fleet", fleetType: "offline", value: "44", change: "18% of total" },
+];
+
+const DEFAULT_VISIBLE = ["fleet-total", "fleet-online", "fleet-offline"];
 
 export default function Dashboard() {
+  const [editing, setEditing] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [visibleWidgets, setVisibleWidgets] = useState(DEFAULT_VISIBLE);
+
+  const fleetIcons = { total: Server, online: Wifi, offline: WifiOff };
+  const fleetColors = { total: "text-grafana-blue", online: "text-grafana-green", offline: "text-grafana-red" };
+
+  const enterEditMode = () => {
+    setEditing(true);
+    setDrawerOpen(true);
+  };
+
+  const cancelEdit = () => {
+    setVisibleWidgets(DEFAULT_VISIBLE);
+    setEditing(false);
+    setDrawerOpen(false);
+  };
+
+  const handleSave = () => {
+    setEditing(false);
+    setDrawerOpen(false);
+  };
+
+  const toggleWidget = (id, visible) => {
+    if (visible) {
+      setVisibleWidgets((prev) => [...prev, id]);
+    } else {
+      setVisibleWidgets((prev) => prev.filter((w) => w !== id));
+    }
+  };
+
   return (
-    <div className="space-y-6">
-      <div>
-        <PageBreadCrumb items={['Fleet Admin', 'Dashboard']} />
-        <h1 className="text-lg font-semibold text-text-primary">Dashboard</h1>
-        <p className="text-sm text-text-secondary mt-0.5">Cluster overview and key metrics</p>
-      </div>
+    <div className="flex flex-col h-full">
+      <header className="flex items-center justify-between px-0 py-3 border-b border-(--color-border) shrink-0">
+        <div>
+          <h1 className="text-lg font-semibold text-(--color-text-primary)">Overview</h1>
+          <p className="text-sm text-(--color-text-muted)">Fleet-wide status at a glance</p>
+        </div>
+        <div className="flex items-center gap-2">
+          {editing ? (
+            <>
+              <Button size="sm" onClick={handleSave}>
+                <Save size={14} /> Save
+              </Button>
+              <Button variant="secondary" size="sm" onClick={cancelEdit}>
+                <X size={14} /> Cancel
+              </Button>
+            </>
+          ) : (
+            <Button variant="secondary" size="sm" onClick={enterEditMode}>
+              <Edit3 size={14} /> Edit
+            </Button>
+          )}
+        </div>
+      </header>
 
-      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-        <StatCard title="Total Nodes" value="247" change={12} changeLabel="vs last week" icon={Server}
-          chart={<SparklineChart data={[12, 19, 15, 22, 18, 29, 24, 34, 28, 32, 38, 35, 42, 39, 45]} color="#6f96d9" />} />
-        <StatCard title="CPU Usage (Avg)" value="47.3%" change={-5.2} changeLabel="vs last week" icon={Cpu}
-          chart={<SparklineChart data={[45, 48, 42, 47, 44, 46, 43]} color="#f5c542" />} />
-        <StatCard title="Memory Usage" value="62.8%" change={8.1} changeLabel="vs last week" icon={HardDrive}
-          chart={<SparklineChart data={[55, 58, 62, 59, 63, 61, 65]} color="#967bde" />} />
-        <StatCard title="Active Alerts" value="14" change={-23} changeLabel="vs last week" icon={AlertTriangle}
-          chart={<SparklineChart data={[22, 20, 18, 21, 16, 15, 14]} color="#e24d5d" />} />
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
-        <div className="lg:col-span-2 rounded-xl border border-border-default bg-bg-card p-5">
-          <div className="flex items-center justify-between mb-4">
-            <div>
-              <h3 className="text-sm font-semibold text-text-primary">Cluster Throughput (24h)</h3>
-              <p className="text-xs text-text-tertiary mt-0.5">Requests per second across all nodes</p>
+      <div className="flex flex-1 overflow-hidden">
+        {/* Widget Drawer */}
+        {drawerOpen && (
+          <div className="w-64 shrink-0 border-r border-(--color-border) p-4 space-y-3 overflow-y-auto">
+            <h3 className="text-xs font-semibold uppercase tracking-wider text-(--color-text-muted)">Widgets</h3>
+            <div className="space-y-2">
+              <p className="text-[10px] font-medium text-(--color-text-muted) uppercase tracking-wider">Fleet Stats</p>
+              {FLEET_WIDGETS.map((w) => {
+                const visible = visibleWidgets.includes(w.id);
+                const Icon = fleetIcons[w.fleetType] || Server;
+                return (
+                  <label key={w.id} className="flex items-center gap-2 px-2 py-1.5 rounded hover:bg-(--color-surface-hover) cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={visible}
+                      onChange={() => toggleWidget(w.id, !visible)}
+                      className="accent-grafana-blue"
+                    />
+                    <Icon size={12} className={fleetColors[w.fleetType]} />
+                    <span className="text-xs text-(--color-text-primary)">{w.title}</span>
+                  </label>
+                );
+              })}
+              <p className="text-[10px] font-medium text-(--color-text-muted) uppercase tracking-wider pt-2">Analytics</p>
+              <div className="px-2 py-2 text-xs text-(--color-text-muted)">
+                Analytics webview widgets will appear here.
+              </div>
             </div>
           </div>
-          <AreaChart
-            data={[
-              { name: 'Requests', data: [4200, 2100, 1800, 3400, 7800, 9200, 10100, 9800, 8700, 6400, 5100, 3800] },
-              { name: 'Latency (ms)', data: [95, 82, 78, 88, 112, 135, 142, 138, 125, 108, 98, 90] },
-            ]}
-            categories={['00:00', '02:00', '04:00', '06:00', '08:00', '10:00', '12:00', '14:00', '16:00', '18:00', '20:00', '22:00']}
-            colors={['#6f96d9', '#e24d5d']}
-            height={220}
-          />
-        </div>
-        <div>
-          <ActivityFeed />
+        )}
+
+        {/* Main grid */}
+        <div className="flex-1 overflow-y-auto p-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            {FLEET_WIDGETS.filter((w) => visibleWidgets.includes(w.id)).map((widget) => {
+              const Icon = fleetIcons[widget.fleetType] || Server;
+              const colorClass = fleetColors[widget.fleetType] || "text-grafana-blue";
+              return (
+                <Card key={widget.id} className={`p-5 ${editing ? "ring-1 ring-grafana-blue/40" : ""}`}>
+                  <div className="flex items-center gap-3 mb-3">
+                    <div className={`w-10 h-10 rounded-lg ${colorClass}/10 flex items-center justify-center`}>
+                      <Icon size={20} className={colorClass} />
+                    </div>
+                    <div>
+                      <p className="text-xs text-(--color-text-muted)">{widget.title}</p>
+                      <p className="text-2xl font-bold text-(--color-text-primary)">{widget.value}</p>
+                    </div>
+                  </div>
+                  <p className="text-xs text-(--color-text-muted)">{widget.change}</p>
+                </Card>
+              );
+            })}
+          </div>
+
+          {visibleWidgets.length === 0 && (
+            <div className="flex flex-col items-center justify-center py-16 text-center">
+              <BarChart3 size={48} className="text-(--color-text-muted)/30 mb-4" />
+              <p className="text-(--color-text-muted) text-sm">No widgets visible</p>
+              <p className="text-(--color-text-muted) text-xs mt-1">Open the widget drawer to add widgets to this dashboard.</p>
+            </div>
+          )}
         </div>
       </div>
-
-      <DataTable />
     </div>
-  )
+  );
 }

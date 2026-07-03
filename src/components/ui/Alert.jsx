@@ -21,10 +21,10 @@ export default function Alert({ variant = 'info', title, children, dismissible }
         <Icon size={18} className={`${c.text} flex-shrink-0 mt-0.5`} />
         <div className="flex-1 min-w-0">
           {title && <p className={`text-sm font-semibold ${c.text}`}>{title}</p>}
-          <div className="text-sm text-text-secondary mt-0.5">{children}</div>
+          <div className="text-sm text-(--color-text-secondary) mt-0.5">{children}</div>
         </div>
         {dismissible && (
-          <button onClick={() => setHidden(true)} className="flex-shrink-0 text-text-tertiary hover:text-text-primary cursor-pointer">
+          <button onClick={() => setHidden(true)} className="flex-shrink-0 text-(--color-text-muted) hover:text-(--color-text-primary) cursor-pointer">
             <X size={14} />
           </button>
         )}

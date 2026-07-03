@@ -19,10 +19,10 @@
   --color-warning: #f5c542;
   --color-error: #e24d5d;
   --color-info: #6f96d9;
-}
 
-:root,
-[data-theme="light"] {
+  /* Theme colors — light defaults.
+     Tailwind generates utility classes (bg-surface-elevated, text-text-primary, etc.)
+     referencing var(--color-*). [data-theme="dark"] overrides the vars at runtime. */
   --color-surface-base: #f4f5f8;
   --color-surface-elevated: #ffffff;
   --color-surface-hover: #f0f1f4;
@@ -30,46 +30,17 @@
   --color-text-primary: #1a1a2e;
   --color-text-secondary: #555560;
   --color-text-muted: #909090;
-
-  /* Legacy aliases */
-  --color-bg-body: #f4f5f8;
-  --color-bg-surface: #ffffff;
-  --color-bg-card: #ffffff;
-  --color-bg-elevated: #ffffff;
-  --color-bg-input: #f0f1f4;
-  --color-bg-hover: #ecedf0;
-  --color-border-default: #e0e2e6;
-  --color-border-subtle: #e8eaed;
-  --color-text-tertiary: #9ca0a8;
-  --color-text-inverse: #ffffff;
-  --color-sidebar-bg: #f0f1f4;
-  --color-sidebar-hover: #e0e2e6;
-  --color-sidebar-active: #d6d8dd;
 }
 
+/* ----- Dark theme overrides (Grafana palette) ----- */
 [data-theme="dark"] {
-  --color-surface-base: #141414;
-  --color-surface-elevated: #1b1b2f;
-  --color-surface-hover: #212124;
-  --color-border: #2a2a2e;
-  --color-text-primary: #e0e0e0;
-  --color-text-secondary: #b4b4b4;
-  --color-text-muted: #8a8a8a;
-
-  /* Legacy aliases */
-  --color-bg-body: #141414;
-  --color-bg-surface: #1b1b2f;
-  --color-bg-card: #1b1b2f;
-  --color-bg-elevated: #1b1b2f;
-  --color-bg-input: #1b1b2f;
-  --color-bg-hover: #212124;
-  --color-border-default: #2a2a2e;
-  --color-border-subtle: #2a2a2e;
-  --color-text-tertiary: #8a8a8a;
-  --color-text-inverse: #141414;
-  --color-sidebar-bg: #141414;
-  --color-sidebar-hover: #212124;
-  --color-sidebar-active: #1b1b2f;
+  --color-surface-base: #111217;
+  --color-surface-elevated: #181b1f;
+  --color-surface-hover: #22252b;
+  --color-border: #33353d;
+  --color-text-primary: #e2e5eb;
+  --color-text-secondary: #b4b9c4;
+  --color-text-muted: #7a7f8a;
 }
 
 [data-theme="dark"] input,
@@ -132,5 +103,3 @@ body {
 .animate-pulse-dot {
   animation: pulse-dot 2s ease-in-out infinite;
 }
-
-
