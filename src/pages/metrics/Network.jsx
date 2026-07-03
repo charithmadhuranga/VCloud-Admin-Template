@@ -12,7 +12,7 @@ export default function MetricsNetwork() {
         <p className="text-sm text-text-secondary mt-0.5">Bandwidth, latency, and packet statistics</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard title="Throughput" value="1.4 Gbps" change={12} changeLabel="vs last hour" icon={Wifi} />
         <StatCard title="P99 Latency" value="142ms" change={-8} changeLabel="vs last hour" icon={Wifi} />
         <StatCard title="Packets In" value="2.1M/s" change={5} changeLabel="vs last hour" icon={ArrowDown} />

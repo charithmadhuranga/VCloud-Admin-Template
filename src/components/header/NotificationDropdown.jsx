@@ -28,7 +28,7 @@ export default function NotificationDropdown() {
           </span>
         )}
       </button>
-      <Dropdown isOpen={open} onClose={() => setOpen(false)} className="w-[360px] p-3">
+      <Dropdown isOpen={open} onClose={() => setOpen(false)} className="w-[320px] sm:w-[360px] max-sm:!left-4 max-sm:!right-4 max-sm:w-auto p-3">
         <div className="flex items-center justify-between pb-3 mb-2 border-b border-border-default">
           <h5 className="text-sm font-semibold text-text-primary">Notifications</h5>
           <span className="text-[11px] text-text-tertiary">{unread} unread</span>

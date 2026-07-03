@@ -3,38 +3,40 @@ import { createContext, useContext, useState, useEffect } from 'react'
 const SidebarContext = createContext()
 
 export function SidebarProvider({ children }) {
-  const [expanded, setExpanded] = useState(true)
-  const [mobileOpen, setMobileOpen] = useState(false)
-  const [hovered, setHovered] = useState(false)
+  const [isExpanded, setIsExpanded] = useState(true)
+  const [isMobileOpen, setIsMobileOpen] = useState(false)
   const [isMobile, setIsMobile] = useState(false)
 
   useEffect(() => {
-    const check = () => {
+    const handleResize = () => {
       const mobile = window.innerWidth < 1024
       setIsMobile(mobile)
-      if (mobile) setExpanded(false)
+      if (!mobile) setIsMobileOpen(false)
     }
-    check()
-    window.addEventListener('resize', check)
-    return () => window.removeEventListener('resize', check)
+    handleResize()
+    window.addEventListener('resize', handleResize)
+    return () => window.removeEventListener('resize', handleResize)
   }, [])
 
   const toggleSidebar = () => {
-    if (isMobile) setMobileOpen(prev => !prev)
-    else setExpanded(prev => !prev)
+    if (isMobile) setIsMobileOpen(prev => !prev)
+    else setIsExpanded(prev => !prev)
   }
 
-  const showLabels = expanded || hovered || mobileOpen
+  const toggleMobileSidebar = () => {
+    setIsMobileOpen(prev => !prev)
+  }
+
+  const showLabels = isExpanded || isMobileOpen
 
   return (
     <SidebarContext.Provider value={{
-      expanded: isMobile ? false : expanded,
-      mobileOpen,
-      hovered,
+      isExpanded: isMobile ? false : isExpanded,
+      isMobileOpen,
       showLabels,
-      setHovered,
       toggleSidebar,
-      setMobileOpen,
+      toggleMobileSidebar,
+      setIsMobileOpen,
       isMobile,
     }}>
       {children}

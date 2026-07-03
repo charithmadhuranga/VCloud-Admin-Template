@@ -24,12 +24,12 @@ export default function Alerts() {
     <div className="space-y-6">
       <div>
         <PageBreadCrumb items={['Fleet Admin', 'Alerts']} />
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <h1 className="text-lg font-semibold text-text-primary">Alerts</h1>
             <p className="text-sm text-text-secondary mt-0.5">Active and historical alerts across the fleet</p>
           </div>
-          <Button variant="secondary" size="sm" icon={Filter}>Filter</Button>
+          <div className="flex-shrink-0 self-start sm:self-auto"><Button variant="secondary" size="sm" icon={Filter}>Filter</Button></div>
         </div>
       </div>
 

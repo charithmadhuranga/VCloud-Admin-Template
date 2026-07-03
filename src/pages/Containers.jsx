@@ -25,24 +25,24 @@ export default function Containers() {
     <div className="space-y-6">
       <div>
         <PageBreadCrumb items={['Fleet Admin', 'Infrastructure', 'Containers']} />
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <h1 className="text-lg font-semibold text-text-primary">Containers</h1>
             <p className="text-sm text-text-secondary mt-0.5">{containers.length} containers across the cluster</p>
           </div>
-          <div className="flex gap-2">
+          <div className="flex-shrink-0 self-start sm:self-auto">
             <Button variant="secondary" size="sm" icon={RefreshCw}>Refresh</Button>
           </div>
         </div>
       </div>
 
       <div className="rounded-xl border border-border-default bg-bg-card overflow-hidden">
-        <div className="px-5 py-3 border-b border-border-default flex items-center justify-between">
+        <div className="px-4 sm:px-5 py-3 border-b border-border-default flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <h3 className="text-sm font-semibold text-text-primary">Container List</h3>
-          <div className="relative">
+          <div className="relative w-full sm:w-auto">
             <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
             <input type="text" value={filter} onChange={e => setFilter(e.target.value)}
-              placeholder="Filter..." className="w-44 h-8 pl-8 pr-2 rounded-md bg-bg-input border border-border-subtle text-xs text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-grafana-blue/30" />
+              placeholder="Filter..." className="w-full sm:w-44 h-8 pl-8 pr-2 rounded-md bg-bg-input border border-border-subtle text-xs text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-grafana-blue/30" />
           </div>
         </div>
         <div className="overflow-x-auto">

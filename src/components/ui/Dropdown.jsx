@@ -19,7 +19,7 @@ export default function Dropdown({ isOpen, onClose, children, className = '', al
     <div
       ref={ref}
       className={`absolute z-50 mt-2 min-w-[220px] rounded-xl border border-border-default bg-bg-card shadow-lg animate-fade-in ${
-        align === 'right' ? 'right-0' : 'left-0'
+        align === 'right' ? 'right-0 sm:right-0 max-sm:left-4 max-sm:right-4' : 'left-0'
       } ${className}`}
     >
       {children}

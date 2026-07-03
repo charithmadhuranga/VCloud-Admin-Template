@@ -27,28 +27,28 @@ export default function Users() {
     <div className="space-y-6">
       <div>
         <PageBreadCrumb items={['Fleet Admin', 'Infrastructure', 'Users']} />
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <h1 className="text-lg font-semibold text-text-primary">Users</h1>
             <p className="text-sm text-text-secondary mt-0.5">{users.length} team members</p>
           </div>
-          <Button variant="primary" size="sm" icon={UserPlus}>Invite User</Button>
+          <div className="flex-shrink-0 self-start sm:self-auto"><Button variant="primary" size="sm" icon={UserPlus}>Invite User</Button></div>
         </div>
       </div>
 
       <div className="rounded-xl border border-border-default bg-bg-card overflow-hidden">
-        <div className="px-5 py-3 border-b border-border-default flex items-center justify-between">
-          <div className="flex gap-4">
+        <div className="px-4 sm:px-5 py-3 border-b border-border-default flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div className="flex gap-4 overflow-x-auto no-scrollbar">
             {['All', 'Active', 'Inactive', 'Suspended'].map(tab => (
-              <button key={tab} className={`text-xs font-medium transition-colors cursor-pointer ${
+              <button key={tab} className={`text-xs font-medium whitespace-nowrap transition-colors cursor-pointer ${
                 tab === 'All' ? 'text-grafana-blue' : 'text-text-tertiary hover:text-text-primary'
               }`}>{tab}</button>
             ))}
           </div>
-          <div className="relative">
+          <div className="relative w-full sm:w-auto">
             <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
             <input type="text" value={filter} onChange={e => setFilter(e.target.value)}
-              placeholder="Search users..." className="w-44 h-8 pl-8 pr-2 rounded-md bg-bg-input border border-border-subtle text-xs text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-grafana-blue/30" />
+              placeholder="Search users..." className="w-full sm:w-44 h-8 pl-8 pr-2 rounded-md bg-bg-input border border-border-subtle text-xs text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-grafana-blue/30" />
           </div>
         </div>
         <div className="overflow-x-auto">

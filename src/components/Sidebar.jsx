@@ -1,8 +1,8 @@
-import { useState } from 'react'
+import { useState, useEffect, useRef, useCallback } from 'react'
 import { Link, useLocation } from 'react-router'
 import {
   LayoutDashboard, BarChart3, Activity, Bell, Settings, Server, Cpu, Shield, Users,
-  ChevronDown, ChevronRight, X, FileText, Radio
+  ChevronDown, FileText, Radio, X
 } from 'lucide-react'
 import { useSidebar } from '../context/SidebarContext'
 
@@ -43,130 +43,180 @@ const navGroups = [
 ]
 
 export default function Sidebar() {
-  const { expanded, mobileOpen, hovered, showLabels, setHovered, toggleSidebar, setMobileOpen } = useSidebar()
-  const [expandedMenus, setExpandedMenus] = useState({})
+  const { isExpanded, isMobileOpen, showLabels, toggleSidebar, setIsMobileOpen, isMobile } = useSidebar()
+  const [openSubmenu, setOpenSubmenu] = useState(null)
+  const [subMenuHeight, setSubMenuHeight] = useState({})
+  const subMenuRefs = useRef({})
   const location = useLocation()
-  const sidebarW = expanded || hovered ? 'w-60' : 'w-16'
 
-  const isActivePath = (path) => {
+  const isActive = useCallback((path) => {
     if (!path) return false
     if (path === '/') return location.pathname === '/'
     if (path.startsWith('/metrics')) return location.pathname.startsWith(path)
     return location.pathname === path
+  }, [location.pathname])
+
+  useEffect(() => {
+    let matched = false
+    navGroups.forEach((group, gi) => {
+      group.items.forEach((item, ii) => {
+        if (item.children) {
+          item.children.forEach(child => {
+            if (isActive(child.path)) {
+              setOpenSubmenu(`${gi}-${ii}`)
+              matched = true
+            }
+          })
+        }
+      })
+    })
+    if (!matched) setOpenSubmenu(null)
+  }, [location.pathname, isActive])
+
+  useEffect(() => {
+    if (openSubmenu) {
+      const el = subMenuRefs.current[openSubmenu]
+      if (el) {
+        setSubMenuHeight(prev => ({
+          ...prev,
+          [openSubmenu]: el.scrollHeight,
+        }))
+      }
+    }
+  }, [openSubmenu])
+
+  const handleSubmenuToggle = (id) => {
+    setOpenSubmenu(prev => prev === id ? null : id)
   }
 
-  const isChildActive = (children) => children?.some(c => isActivePath(c.path))
-
-  const toggleMenu = (id) => {
-    setExpandedMenus(prev => ({ ...prev, [id]: !prev[id] }))
-  }
-
-  const sidebarContent = (
-    <aside
-      className={`flex flex-col bg-sidebar-bg border-r border-border-default h-full transition-all duration-300 ${sidebarW}`}
-      onMouseEnter={() => !expanded && setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
-    >
-      <div className="flex items-center h-14 px-4 border-b border-border-default gap-3 flex-shrink-0">
-        <div className="w-7 h-7 rounded-md bg-grafana-blue flex items-center justify-center flex-shrink-0">
-          <Activity size={14} className="text-white" />
-        </div>
-        {showLabels && (
-          <span className="font-semibold text-sm tracking-tight text-text-primary truncate flex-1">
-            Fleet Admin
-          </span>
-        )}
-        <button onClick={toggleSidebar} className="lg:hidden text-text-secondary hover:text-text-primary cursor-pointer">
-          <X size={18} />
-        </button>
-      </div>
-
-      <nav className="flex-1 overflow-y-auto py-3 px-2 space-y-5 custom-scrollbar">
-        {navGroups.map((group) => (
-          <div key={group.section}>
-            {showLabels && (
-              <p className="px-2 mb-1.5 text-[10px] font-semibold tracking-widest text-text-tertiary uppercase">
-                {group.section}
-              </p>
-            )}
-            <div className="space-y-0.5">
-              {group.items.map((item) => {
-                if (item.children) {
-                  const open = expandedMenus[item.label] ?? isChildActive(item.children)
-                  return (
-                    <div key={item.label}>
-                      <button
-                        onClick={() => toggleMenu(item.label)}
-                        className={`w-full flex items-center gap-3 px-2 py-2 rounded-lg text-sm transition-colors cursor-pointer ${
-                          open ? 'bg-sidebar-active text-grafana-blue' : 'text-text-secondary hover:bg-sidebar-hover hover:text-text-primary'
-                        }`}
-                      >
-                        <item.icon size={18} className="flex-shrink-0" />
-                        {showLabels && <span className="truncate flex-1 text-left">{item.label}</span>}
-                        {showLabels && (
-                          open ? <ChevronDown size={14} /> : <ChevronRight size={14} />
-                        )}
-                      </button>
-                      <div className={`overflow-hidden transition-all duration-200 ${open ? 'mt-0.5 max-h-96' : 'max-h-0'}`}>
-                        <div className="ml-7 space-y-0.5 border-l border-border-default pl-2 pt-0.5">
-                          {item.children.map(child => (
-                            <Link
-                              key={child.path}
-                              to={child.path}
-                              onClick={() => mobileOpen && setMobileOpen(false)}
-                              className={`block px-2 py-1.5 rounded-lg text-xs transition-colors ${
-                                isActivePath(child.path) ? 'text-grafana-blue font-medium bg-sidebar-active' : 'text-text-secondary hover:text-text-primary hover:bg-sidebar-hover'
-                              }`}
-                            >
-                              {child.label}
-                            </Link>
-                          ))}
-                        </div>
-                      </div>
-                    </div>
-                  )
-                }
-
-                const active = isActivePath(item.path)
-                return (
-                  <Link
-                    key={item.path}
-                    to={item.path}
-                    onClick={() => mobileOpen && setMobileOpen(false)}
-                    className={`flex items-center gap-3 px-2 py-2 rounded-lg text-sm transition-colors ${
-                      active
-                        ? 'bg-sidebar-active text-grafana-blue font-medium'
-                        : 'text-text-secondary hover:bg-sidebar-hover hover:text-text-primary'
+  const renderItems = (items, groupIndex) => (
+    <ul className="flex flex-col gap-1">
+      {items.map((item, index) => {
+        const id = `${groupIndex}-${index}`
+        if (item.children) {
+          const isSubOpen = openSubmenu === id
+          const active = !isSubOpen && item.children.some(c => isActive(c.path))
+          return (
+            <li key={item.label}>
+              <button
+                onClick={() => handleSubmenuToggle(id)}
+                className={`menu-item group cursor-pointer ${
+                  !showLabels ? 'lg:justify-center' : 'lg:justify-start'
+                } ${isSubOpen || active ? 'menu-item-active' : 'menu-item-inactive'}`}
+              >
+                <span className={`menu-item-icon-size ${isSubOpen || active ? 'menu-item-icon-active' : 'menu-item-icon-inactive'}`}>
+                  <item.icon size={20} />
+                </span>
+                {showLabels && (
+                  <span className="truncate flex-1 text-left">{item.label}</span>
+                )}
+                {showLabels && (
+                  <ChevronDown size={14}
+                    className={`flex-shrink-0 transition-transform duration-200 ${
+                      isSubOpen ? 'rotate-180 text-grafana-blue' : ''
                     }`}
-                  >
-                    <item.icon size={18} className="flex-shrink-0" />
-                    {showLabels && <span className="truncate flex-1">{item.label}</span>}
-                    {showLabels && item.badge && (
-                      <span className="px-1.5 py-0.5 rounded-full bg-grafana-red/15 text-grafana-red text-[10px] font-semibold">
-                        {item.badge}
-                      </span>
-                    )}
-                  </Link>
-                )
-              })}
-            </div>
-          </div>
-        ))}
-      </nav>
-    </aside>
+                  />
+                )}
+              </button>
+              {showLabels && (
+                <div
+                  ref={el => { subMenuRefs.current[id] = el }}
+                  className="overflow-hidden transition-all duration-300 ease-in-out"
+                  style={{ height: isSubOpen ? `${subMenuHeight[id] || 0}px` : '0px' }}
+                >
+                  <ul className="mt-1 space-y-0.5 ml-9">
+                    {item.children.map(child => (
+                      <li key={child.path}>
+                        <Link
+                          to={child.path}
+                          onClick={() => isMobileOpen && setIsMobileOpen(false)}
+                          className={`menu-dropdown-item ${
+                            isActive(child.path) ? 'menu-dropdown-item-active' : 'menu-dropdown-item-inactive'
+                          }`}
+                        >
+                          {child.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </li>
+          )
+        }
+
+        const active = isActive(item.path)
+        return (
+          <li key={item.path}>
+            <Link
+              to={item.path}
+              onClick={() => isMobileOpen && setIsMobileOpen(false)}
+              className={`menu-item group ${
+                !showLabels ? 'lg:justify-center' : 'lg:justify-start'
+              } ${active ? 'menu-item-active' : 'menu-item-inactive'}`}
+            >
+              <span className={`menu-item-icon-size ${active ? 'menu-item-icon-active' : 'menu-item-icon-inactive'}`}>
+                <item.icon size={20} />
+              </span>
+              {showLabels && (
+                <span className="truncate flex-1">{item.label}</span>
+              )}
+              {showLabels && item.badge && (
+                <span className="flex-shrink-0 px-1.5 py-0.5 rounded-full bg-grafana-red/15 text-grafana-red text-[10px] font-semibold">
+                  {item.badge}
+                </span>
+              )}
+            </Link>
+          </li>
+        )
+      })}
+    </ul>
   )
 
   return (
     <>
-      {mobileOpen && (
-        <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={() => setMobileOpen(false)} />
+      {isMobileOpen && (
+        <div className="fixed inset-0 z-40 bg-black/50 lg:hidden" onClick={() => setIsMobileOpen(false)} />
       )}
-      <div className={`hidden lg:flex flex-shrink-0 ${sidebarW} transition-all duration-300`}>
-        {sidebarContent}
-      </div>
-      <div className={`lg:hidden fixed inset-y-0 left-0 z-50 transition-transform duration-300 ${mobileOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        {sidebarContent}
-      </div>
+      <aside
+        className={`fixed top-0 left-0 h-screen z-50 flex flex-col bg-sidebar-bg border-r border-border-default transition-all duration-300 ease-in-out
+          ${isExpanded || isMobileOpen ? 'w-[290px]' : 'w-[90px]'}
+          ${isMobileOpen ? 'translate-x-0' : '-translate-x-full'}
+          lg:translate-x-0`}
+      >
+        <div className={`flex items-center h-14 px-4 border-b border-border-default flex-shrink-0 gap-3 ${
+          !showLabels ? 'lg:justify-center' : 'justify-start'
+        }`}>
+          <div className="w-7 h-7 rounded-md bg-grafana-blue flex items-center justify-center flex-shrink-0">
+            <Activity size={14} className="text-white" />
+          </div>
+          {showLabels && (
+            <span className="font-semibold text-sm tracking-tight text-text-primary truncate flex-1">
+              Fleet Admin
+            </span>
+          )}
+          {isMobileOpen && (
+            <button onClick={toggleSidebar} className="lg:hidden text-text-secondary hover:text-text-primary cursor-pointer flex-shrink-0">
+              <X size={18} />
+            </button>
+          )}
+        </div>
+
+        <div className="flex-1 overflow-y-auto py-4 px-3 no-scrollbar">
+          <nav className="space-y-6">
+            {navGroups.map((group, gi) => (
+              <div key={group.section}>
+                <h2 className={`mb-3 text-[10px] font-semibold tracking-widest text-text-tertiary uppercase flex items-center ${
+                  showLabels ? 'justify-start' : 'lg:justify-center'
+                }`}>
+                  {showLabels ? group.section : <span className="size-1.5 rounded-full bg-text-tertiary" />}
+                </h2>
+                {renderItems(group.items, gi)}
+              </div>
+            ))}
+          </nav>
+        </div>
+      </aside>
     </>
   )
 }

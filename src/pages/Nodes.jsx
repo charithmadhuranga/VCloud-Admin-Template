@@ -10,12 +10,12 @@ export default function Nodes() {
     <div className="space-y-6">
       <div>
         <PageBreadCrumb items={['Fleet Admin', 'Infrastructure', 'Nodes']} />
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <h1 className="text-lg font-semibold text-text-primary">Nodes</h1>
             <p className="text-sm text-text-secondary mt-0.5">Manage cluster nodes and resources</p>
           </div>
-          <Button variant="primary" size="sm" icon={Plus}>Add Node</Button>
+          <div className="flex-shrink-0 self-start sm:self-auto"><Button variant="primary" size="sm" icon={Plus}>Add Node</Button></div>
         </div>
       </div>
 

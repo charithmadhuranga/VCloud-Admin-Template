@@ -27,16 +27,16 @@ export default function Security() {
     <div className="space-y-6">
       <div>
         <PageBreadCrumb items={['Fleet Admin', 'Infrastructure', 'Security']} />
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <h1 className="text-lg font-semibold text-text-primary">Security</h1>
             <p className="text-sm text-text-secondary mt-0.5">Security policies, compliance, and events</p>
           </div>
-          <Button variant="primary" size="sm" icon={Shield}>Run Audit</Button>
+          <div className="flex-shrink-0 self-start sm:self-auto"><Button variant="primary" size="sm" icon={Shield}>Run Audit</Button></div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         {[
           { label: 'Policies Enforced', value: '4/6', icon: Lock, color: 'text-grafana-green' },
           { label: 'Compliance Score', value: '95%', icon: CheckCircle, color: 'text-grafana-green' },

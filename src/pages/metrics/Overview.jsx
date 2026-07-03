@@ -14,7 +14,7 @@ export default function MetricsOverview() {
         <p className="text-sm text-text-secondary mt-0.5">Aggregated cluster metrics</p>
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
         <StatCard title="Avg CPU" value="47.3%" change={-5.2} changeLabel="vs last hour" icon={Cpu} />
         <StatCard title="Memory" value="62.8%" change={8.1} changeLabel="vs last hour" icon={HardDrive} />
         <StatCard title="Network I/O" value="1.4 Gbps" change={12} changeLabel="vs last hour" icon={Wifi} />

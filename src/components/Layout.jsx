@@ -1,22 +1,32 @@
 import { Outlet } from 'react-router'
 import Sidebar from './Sidebar'
 import Header from './Header'
-import { SidebarProvider } from '../context/SidebarContext'
+import { SidebarProvider, useSidebar } from '../context/SidebarContext'
+
+function LayoutContent() {
+  const { isExpanded } = useSidebar()
+
+  return (
+    <div className="min-h-screen bg-bg-body flex flex-col">
+      <Sidebar />
+      <div className={`flex flex-col flex-1 transition-all duration-300 ease-in-out ${
+        isExpanded ? 'lg:ml-[290px]' : 'lg:ml-[90px]'
+      }`}>
+        <Header />
+        <main className="flex-1 overflow-y-auto p-3 sm:p-4 md:p-6">
+          <div className="mx-auto max-w-(--breakpoint-2xl) animate-fade-in">
+            <Outlet />
+          </div>
+        </main>
+      </div>
+    </div>
+  )
+}
 
 export default function Layout() {
   return (
     <SidebarProvider>
-      <div className="flex h-screen overflow-hidden bg-bg-body">
-        <Sidebar />
-        <div className="flex-1 flex flex-col min-w-0">
-          <Header />
-          <main className="flex-1 overflow-y-auto p-4 md:p-6">
-            <div className="max-w-(--breakpoint-2xl) mx-auto animate-fade-in">
-              <Outlet />
-            </div>
-          </main>
-        </div>
-      </div>
+      <LayoutContent />
     </SidebarProvider>
   )
 }

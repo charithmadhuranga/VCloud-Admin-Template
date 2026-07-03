@@ -45,22 +45,22 @@ export default function AuditLog() {
     <div className="space-y-6">
       <div>
         <PageBreadCrumb items={['Fleet Admin', 'Configuration', 'Audit Log']} />
-        <div className="flex items-center justify-between">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <div>
             <h1 className="text-lg font-semibold text-text-primary">Audit Log</h1>
             <p className="text-sm text-text-secondary mt-0.5">Track every action across the fleet</p>
           </div>
-          <Button variant="secondary" size="sm" icon={Download}>Export</Button>
+          <div className="flex-shrink-0 self-start sm:self-auto"><Button variant="secondary" size="sm" icon={Download}>Export</Button></div>
         </div>
       </div>
 
       <div className="rounded-xl border border-border-default bg-bg-card overflow-hidden">
-        <div className="px-5 py-3 border-b border-border-default flex items-center justify-between">
+        <div className="px-4 sm:px-5 py-3 border-b border-border-default flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
           <h3 className="text-sm font-semibold text-text-primary">Event Log</h3>
-          <div className="relative">
+          <div className="relative w-full sm:w-auto">
             <Search size={13} className="absolute left-2.5 top-1/2 -translate-y-1/2 text-text-tertiary" />
             <input type="text" value={filter} onChange={e => setFilter(e.target.value)}
-              placeholder="Search log..." className="w-44 h-8 pl-8 pr-2 rounded-md bg-bg-input border border-border-subtle text-xs text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-grafana-blue/30" />
+              placeholder="Search log..." className="w-full sm:w-44 h-8 pl-8 pr-2 rounded-md bg-bg-input border border-border-subtle text-xs text-text-primary placeholder:text-text-tertiary focus:outline-none focus:ring-2 focus:ring-grafana-blue/30" />
           </div>
         </div>
         <div className="overflow-x-auto">
